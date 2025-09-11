@@ -71,6 +71,42 @@ Testing is planned and methodical, preventing random/ad hoc approaches. This lea
 
 ---
 
+## Decision Table for Shipping Fee V2
+
+This table summarizes the main test cases used for the shipping fee calculation, covering different combinations of weight, zone, and insurance status.
+
+| Test Case Name                      | Weight | Zone          | Insured | Expected Fee | Expect Error |
+| ----------------------------------- | ------ | ------------- | ------- | ------------ | ------------ |
+| Weight too low                      | -5     | Domestic      | false   | 0            | true         |
+| Weight zero                         | 0      | Domestic      | false   | 0            | true         |
+| Weight just above zero              | 0.01   | Domestic      | false   | 5.00         | false        |
+| Weight just above zero, insured     | 0.01   | Domestic      | true    | 5.08         | false        |
+| Standard, not insured               | 10     | International | false   | 20.00        | false        |
+| Standard, insured                   | 10     | International | true    | 20.30        | false        |
+| Heavy, not insured                  | 20     | Express       | false   | 37.50        | false        |
+| Heavy, insured                      | 20     | Express       | true    | 38.06        | false        |
+| Boundary: weight 10 (Standard)      | 10     | Domestic      | false   | 5.00         | false        |
+| Boundary: weight just above 10      | 10.01  | Domestic      | false   | 12.50        | false        |
+| Boundary: weight just above 10, ins | 10.01  | Domestic      | true    | 12.69        | false        |
+| Weight at upper boundary (50)       | 50     | International | false   | 27.50        | false        |
+| Weight at upper boundary (50), ins  | 50     | International | true    | 27.91        | false        |
+| Weight just above upper boundary    | 50.01  | Express       | false   | 0            | true         |
+| Invalid zone                        | 10     | Local         | false   | 0            | true         |
+| Invalid zone, insured               | 10     | Unknown       | true    | 0            | true         |
+| Zone lowercase (invalid)            | 10     | domestic      | false   | 0            | true         |
+| Standard, insured                   | 5      | Domestic      | true    | 5.08         | false        |
+| Heavy, insured                      | 25     | International | true    | 27.91        | false        |
+| Standard Domestic                   | 1      | Domestic      | false   | 5.00         | false        |
+| Standard International              | 1      | International | false   | 20.00        | false        |
+| Standard Express                    | 1      | Express       | false   | 30.00        | false        |
+| Standard Domestic insured           | 1      | Domestic      | true    | 5.08         | false        |
+| Standard International insured      | 1      | International | true    | 20.30        | false        |
+| Standard Express insured            | 1      | Express       | true    | 30.45        | false        |
+
+- **Fee values** are rounded to two decimal places for clarity.
+- **Expect Error** is true if the input is invalid and the function should return an error.
+
+
 ## Submission Checklist
 
 - [x] Screenshot of all tests passing
